@@ -1,6 +1,10 @@
 package colly_bolt_storage
 
-import "testing"
+import (
+	"testing"
+	"net/url"
+	"strings"
+)
 
 func TestQueue(t *testing.T) {
 	s := &Storage{
@@ -161,4 +165,47 @@ func TestStorage_GetRequest(t *testing.T) {
 			break
 		}
 	}
+}
+
+func TestStorage_Cookies(t *testing.T) {
+	s := &Storage{
+		Path:       "test.db",
+		Mode:       0700,
+		BucketName: []byte("test"),
+		Prefix:     "test",
+	}
+	if err := s.Init(); err != nil {
+		t.Error("failed to initialize storage backend: " + err.Error())
+		return
+	}
+
+	cookies := map[string]string{
+		"https://example.com/": "cookie:http://example.com/",
+		"http://go-colly.org/": "cookie:http://go-colly.org/",
+		"https://xx.yy/zz":     "cookie:https://xx.yy/zz",
+	}
+
+	for k, v := range cookies {
+		URL, err := url.Parse(k)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log("key:", k)
+		t.Log("value:", v)
+		s.SetCookies(URL, cookies[k])
+	}
+
+	for k, v := range cookies {
+		URL, err := url.Parse(k)
+		if err != nil {
+			t.Fatal(err)
+		}
+		cookie := s.Cookies(URL)
+		t.Log("key:", k, "value:", v, "cookie:", cookie)
+		if !strings.EqualFold(v, cookie) {
+			//t.Fatal(v)
+			t.Fatal("Cookies() .Get error is null ")
+		}
+	}
+
 }
