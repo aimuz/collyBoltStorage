@@ -75,12 +75,12 @@ func (s *Storage) Visited(requestID uint64) error {
 
 // IsVisited implements colly/storage.IsVisited()
 func (s *Storage) IsVisited(requestID uint64) (bool, error) {
-	bl := false
+	bl := true
 	err := s.DB.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.BucketName)
 		v := b.Get(s.getIDStr(requestID))
 		if v == nil {
-			bl = true
+			bl = false
 		}
 		return nil
 	})
