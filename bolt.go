@@ -1,14 +1,15 @@
-package colly_bolt_storage
+package collyBoltStorage
+
 
 import (
-	"fmt"
-	"net/url"
-	"sync"
-	"log"
-	"github.com/coreos/bbolt"
-	"os"
-	"errors"
 	"encoding/binary"
+	"errors"
+	"fmt"
+	"github.com/coreos/bbolt"
+	"log"
+	"net/url"
+	"os"
+	"sync"
 )
 
 var (

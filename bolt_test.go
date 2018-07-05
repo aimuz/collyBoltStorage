@@ -1,9 +1,9 @@
-package colly_bolt_storage
+package collyBoltStorage
 
 import (
-	"testing"
 	"net/url"
 	"strings"
+	"testing"
 )
 
 func TestQueue(t *testing.T) {
