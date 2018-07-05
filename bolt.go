@@ -13,6 +13,7 @@ import (
 
 var (
 	CookiesErrNil = errors.New("Cookies() .Get error is null ")
+	QueueIsEmpty  = errors.New("Queue is empty ")
 )
 
 // Storage implements the redis storage backend for Colly
@@ -43,7 +44,6 @@ func (s *Storage) Init() (err error) {
 		_, err = tx.Bucket(s.BucketName).CreateBucketIfNotExists(s.getQueueID())
 		return err
 	})
-
 }
 
 // Clear removes all entries from the storage
@@ -111,7 +111,7 @@ func (s *Storage) Cookies(u *url.URL) string {
 		if v == nil {
 			return CookiesErrNil
 		}
-		cookies = string(b.Get(s.getCookieID(u.Host)))
+		cookies = string(v)
 		return nil
 	})
 	s.mu.RUnlock()
@@ -142,7 +142,7 @@ func (s *Storage) GetRequest() ([]byte, error) {
 		c := b.Cursor()
 		k, v := c.First()
 		if len(k) == 0 && len(v) == 0 {
-			return fmt.Errorf("Queue is empty ")
+			return QueueIsEmpty
 		}
 
 		err := b.Delete(k)
