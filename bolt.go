@@ -1,6 +1,5 @@
 package collyBoltStorage
 
-
 import (
 	"encoding/binary"
 	"errors"
@@ -109,9 +108,6 @@ func (s *Storage) Cookies(u *url.URL) string {
 	err := s.DB.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(s.BucketName)
 		v := b.Get(s.getCookieID(u.Host))
-		if v == nil {
-			return CookiesErrNil
-		}
 		cookies = string(v)
 		return nil
 	})
